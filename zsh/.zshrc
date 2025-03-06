@@ -81,7 +81,9 @@ plugins=(
 
 # Add completions
 fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
-fpath+="$(brew --prefix)/share/zsh/site-functions"
+if [[ $(uname) == "Darwin" ]]; then
+    fpath+="$(brew --prefix)/share/zsh/site-functions"
+fi
 
 source $ZSH/oh-my-zsh.sh
 
@@ -119,7 +121,9 @@ if [[ $(uname) == "Darwin" ]]; then
 fi
 
 # Set default node path
-export NODE_PATH=`which node`
+if which node >/dev/null 2>&1; then
+  export NODE_PATH=$(which node)
+fi
 
 # Add the prettierd config
 export PRETTIERD_DEFAULT_CONFIG="$HOME/.config/nvim/utils/linter-config/.prettierrc.json"
