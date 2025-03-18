@@ -8,7 +8,6 @@ if ! command -v go &> /dev/null; then
 fi
 
 # NODE
-# check if node --version works
 if ! command -v node &> /dev/null; then
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
 fi
