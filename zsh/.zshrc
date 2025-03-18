@@ -118,6 +118,9 @@ if [[ $(uname) == "Darwin" ]]; then
     export NVM_DIR="$HOME/.nvm"
       [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
       [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+else
+	export NVM_DIR="$HOME/.nvm"
+	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 fi
 
 # Set default node path
@@ -128,13 +131,13 @@ fi
 # Add the prettierd config
 export PRETTIERD_DEFAULT_CONFIG="$HOME/.config/nvim/utils/linter-config/.prettierrc.json"
 
-# Add the go path
-export GOPATH="$HOME/go"
-export GOBIN="$GOPATH/bin"
-
 # Add cargo and go to PATH
 export PATH="$HOME/.cargo/bin:$PATH"
-export PATH="$HOME/go/bin:$PATH"
+if [[ $(uname) == "Darwin" ]]; then
+    export PATH="$HOME/go/bin:$PATH"
+else
+    export PATH="/usr/local/go/bin:$PATH"
+fi
 
 # Add composer
 export PATH="$HOME/.composer/vendor/bin:$PATH"
