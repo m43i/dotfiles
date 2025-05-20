@@ -136,7 +136,7 @@ export PATH="$HOME/.cargo/bin:$PATH"
 if [[ $(uname) == "Darwin" ]]; then
     export PATH="$HOME/go/bin:$PATH"
 else
-    export PATH="/usr/local/go/bin:$PATH"
+    export PATH="$HOME/go/bin:$PATH"
 fi
 
 # Add composer
@@ -156,5 +156,10 @@ export GPG_TTY=$(tty)
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
 # Macro for dotfiles
 export DOTFILES="$HOME/.dotfiles"
+

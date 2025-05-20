@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-sudo dnf -y install ninja-build cmake gcc make gettext curl glibc-gconv-extra
+sudo dnf -y install ninja-build cmake gcc make gettext curl glibc-gconv-extra ripgrep
 git clone -b v0.10.4 https://github.com/neovim/neovim.git $HOME/tools/neovim
 
 cd $HOME/tools/neovim
