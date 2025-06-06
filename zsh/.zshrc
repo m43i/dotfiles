@@ -137,6 +137,7 @@ if [[ $(uname) == "Darwin" ]]; then
     export PATH="$HOME/go/bin:$PATH"
 else
     export PATH="$HOME/go/bin:$PATH"
+    export PATH="/usr/local/go/bin/:$PATH"
 fi
 
 # Add composer
@@ -163,3 +164,9 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # Macro for dotfiles
 export DOTFILES="$HOME/.dotfiles"
 
+# Pyenv
+export PATH="/home/apollo/.config/herd-lite/bin:$PATH"
+export PHP_INI_SCAN_DIR="/home/apollo/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - zsh)"

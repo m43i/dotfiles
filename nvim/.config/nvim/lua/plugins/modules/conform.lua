@@ -21,11 +21,12 @@ return {
 				svelte = { "prettierd" },
 				go = { "goimports", "gofmt" },
 				lua = { "stylua" },
+                python = { "black" },
 				["*"] = { "injected" },
 			},
 			formatters = {
 				biome = {
-					condition = function(self, ctx)
+					condition = function(_, ctx)
                         local find = vim.fs.find({ "biome.json" }, { path = ctx.filename, upward = true })[1]
                         return find ~= nil
 					end,
