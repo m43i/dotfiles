@@ -80,70 +80,65 @@ return {
 
 		local lspconfig = require("lspconfig")
 
-        local servers = vim.tbl_keys(require("config.lsp.servers"))
-        for _, server_name in ipairs(servers) do
-				lspconfig[server_name].setup({
-					capabilities = capabilities,
-					on_attach = require("config.lsp.on_attach").on_attach,
-					settings = require("config.lsp.servers")[server_name],
-					filetypes = (require("config.lsp.servers")[server_name] or {}).filetypes,
-				})
-            end
-                local vue_language_server_path = vim.fn.exepath("vue-language-server")
-                    .. "/node_modules/@vue/language-server"
-				lspconfig.ts_ls.setup({
-					capabilities = capabilities,
-					root_dir = require("lspconfig").util.root_pattern("package.json"),
-					on_attach = require("config.lsp.on_attach").on_attach,
-					init_options = {
-						plugins = {
-							{
-								name = "@vue/typescript-plugin",
-								location = vue_language_server_path,
-								languages = { "vue" },
-							},
+		local vue_language_server_path = vim.fn.exepath("vue-language-server") .. "/node_modules/@vue/language-server"
+        lspconfig.gopls.setup({
+            capabilities = capabilities,
+            on_attach = require("config.lsp.on_attach").on_attach,
+            settings = require("config.lsp.servers").gopls,
+        })
+		lspconfig.ts_ls.setup({
+			capabilities = capabilities,
+			root_dir = require("lspconfig").util.root_pattern("package.json"),
+			on_attach = require("config.lsp.on_attach").on_attach,
+			init_options = {
+				plugins = {
+					{
+						name = "@vue/typescript-plugin",
+						location = vue_language_server_path,
+						languages = { "vue" },
+					},
+				},
+			},
+			filetypes = (require("config.lsp.servers").ts_ls or {}).filetypes,
+		})
+		lspconfig.denols.setup({
+			capabilities = capabilities,
+			root_dir = require("lspconfig").util.root_pattern("deno.json", "deno.jsonc", "import_map.json"),
+			on_attach = require("config.lsp.on_attach").on_attach,
+		})
+		lspconfig.clangd.setup({
+			capabilities = capabilities,
+			on_attach = require("config.lsp.on_attach").on_attach,
+			filetypes = { "c", "ino", "cpp", "hpp", "h" },
+		})
+		lspconfig.pylsp.setup({
+			capabilities = capabilities,
+			on_attach = require("config.lsp.on_attach").on_attach,
+			settings = {
+				pylsp = {
+					plugins = {
+						flake8 = {
+							enabled = true,
+							maxLineLength = 120,
+						},
+						mypy = {
+							enabled = true,
+						},
+						pycodestyle = {
+							enabled = false,
+						},
+						pyflakes = {
+							enabled = false,
 						},
 					},
-					filetypes = (require("config.lsp.servers").ts_ls or {}).filetypes,
-				})
-				lspconfig.volar.setup({
-					capabilities = capabilities,
-					root_dir = require("lspconfig").util.root_pattern("nuxt.config.js"),
-					on_attach = require("config.lsp.on_attach").on_attach,
-				})
-				lspconfig.denols.setup({
-					capabilities = capabilities,
-					root_dir = require("lspconfig").util.root_pattern("deno.json", "deno.jsonc", "import_map.json"),
-					on_attach = require("config.lsp.on_attach").on_attach,
-				})
-				lspconfig.clangd.setup({
-					capabilities = capabilities,
-					on_attach = require("config.lsp.on_attach").on_attach,
-					filetypes = { "c", "ino", "cpp", "hpp", "h" },
-				})
-				lspconfig.pylsp.setup({
-					capabilities = capabilities,
-					on_attach = require("config.lsp.on_attach").on_attach,
-					settings = {
-						pylsp = {
-							plugins = {
-								flake8 = {
-									enabled = true,
-									maxLineLength = 120,
-								},
-								mypy = {
-									enabled = true,
-								},
-								pycodestyle = {
-									enabled = false,
-								},
-								pyflakes = {
-									enabled = false,
-								},
-							},
-						},
-					},
-				})
+				},
+			},
+		})
+        lspconfig.lua_ls.setup({
+            capabilities = capabilities,
+            on_attach = require("config.lsp.on_attach").on_attach,
+            settings = require("config.lsp.servers").lua_ls,
+        })
 
 		require("mason").setup({
 			ui = {
@@ -155,18 +150,32 @@ return {
 			},
 		})
 		require("mason-lspconfig").setup({
-            automatic_installation = false,
+			automatic_installation = false,
 			ensure_installed = vim.tbl_keys(require("config.lsp.servers")),
-            automatic_enable = true,
+			automatic_enable = false,
 		})
 
 		vim.diagnostic.config({
 			title = false,
 			underline = true,
 			virtual_text = true,
-			signs = true,
+			signs = {
+				active = true,
+				text = {
+					[vim.diagnostic.severity.ERROR] = " ",
+					[vim.diagnostic.severity.WARN] = " ",
+					[vim.diagnostic.severity.HINT] = "󰠠 ",
+					[vim.diagnostic.severity.INFO] = " ",
+				},
+			},
 			update_in_insert = false,
 			severity_sort = true,
+			icons = {
+				Error = " ",
+				Warn = " ",
+				Hint = "󰠠 ",
+				Info = " ",
+			},
 			float = {
 				source = "if_many",
 				style = "minimal",
@@ -175,11 +184,5 @@ return {
 				prefix = "",
 			},
 		})
-
-		local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
-		for type, icon in pairs(signs) do
-			local hl = "DiagnosticSign" .. type
-			vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-		end
 	end,
 }
