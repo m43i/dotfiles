@@ -41,7 +41,6 @@ return {
 		},
 	},
 	gopls = {},
-	volar = {},
 	svelte = {},
 	denols = {
 		single_file_support = false,

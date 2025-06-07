@@ -2,8 +2,8 @@ return {
 	"neovim/nvim-lspconfig",
 	event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
-		{ "williamboman/mason.nvim", config = true, build = ":MasonUpdate" },
-		"williamboman/mason-lspconfig.nvim",
+		{ "mason-org/mason.nvim", config = true, build = ":MasonUpdate" },
+		"mason-org/mason-lspconfig.nvim",
 		{ "j-hui/fidget.nvim", opts = {} },
 		"folke/neodev.nvim",
 		{ "b0o/schemastore.nvim" },
@@ -68,19 +68,6 @@ return {
 		})
 		vim.api.nvim_set_hl(0, "CmpItemKindSupermaven", { fg = "#6CC644" })
 
-		require("mason").setup({
-			ui = {
-				icons = {
-					package_installed = "✓",
-					package_pending = "➜",
-					package_uninstalled = "✗",
-				},
-			},
-		})
-		require("mason-lspconfig").setup({
-            automatic_installation = false,
-			ensure_installed = vim.tbl_keys(require("config.lsp.servers")),
-		})
 		require("lspconfig.ui.windows").default_options.border = "single"
 		require("neodev").setup()
 
@@ -91,22 +78,19 @@ return {
 			cmp_nvim_lsp.default_capabilities()
 		)
 
-		local mason_lspconfig = require("mason-lspconfig")
 		local lspconfig = require("lspconfig")
 
-		mason_lspconfig.setup_handlers({
-			function(server_name)
+        local servers = vim.tbl_keys(require("config.lsp.servers"))
+        for _, server_name in ipairs(servers) do
 				lspconfig[server_name].setup({
 					capabilities = capabilities,
 					on_attach = require("config.lsp.on_attach").on_attach,
 					settings = require("config.lsp.servers")[server_name],
 					filetypes = (require("config.lsp.servers")[server_name] or {}).filetypes,
 				})
-			end,
-			["ts_ls"] = function()
-				local mason_registry = require("mason-registry")
-				local vue_language_server_path = mason_registry.get_package("vue-language-server"):get_install_path()
-					.. "/node_modules/@vue/language-server"
+            end
+                local vue_language_server_path = vim.fn.exepath("vue-language-server")
+                    .. "/node_modules/@vue/language-server"
 				lspconfig.ts_ls.setup({
 					capabilities = capabilities,
 					root_dir = require("lspconfig").util.root_pattern("package.json"),
@@ -122,29 +106,21 @@ return {
 					},
 					filetypes = (require("config.lsp.servers").ts_ls or {}).filetypes,
 				})
-			end,
-			["volar"] = function()
 				lspconfig.volar.setup({
 					capabilities = capabilities,
 					root_dir = require("lspconfig").util.root_pattern("nuxt.config.js"),
 					on_attach = require("config.lsp.on_attach").on_attach,
 				})
-			end,
-			["denols"] = function()
 				lspconfig.denols.setup({
 					capabilities = capabilities,
 					root_dir = require("lspconfig").util.root_pattern("deno.json", "deno.jsonc", "import_map.json"),
 					on_attach = require("config.lsp.on_attach").on_attach,
 				})
-			end,
-			["clangd"] = function()
 				lspconfig.clangd.setup({
 					capabilities = capabilities,
 					on_attach = require("config.lsp.on_attach").on_attach,
 					filetypes = { "c", "ino", "cpp", "hpp", "h" },
 				})
-			end,
-			["pylsp"] = function()
 				lspconfig.pylsp.setup({
 					capabilities = capabilities,
 					on_attach = require("config.lsp.on_attach").on_attach,
@@ -168,7 +144,20 @@ return {
 						},
 					},
 				})
-			end,
+
+		require("mason").setup({
+			ui = {
+				icons = {
+					package_installed = "✓",
+					package_pending = "➜",
+					package_uninstalled = "✗",
+				},
+			},
+		})
+		require("mason-lspconfig").setup({
+            automatic_installation = false,
+			ensure_installed = vim.tbl_keys(require("config.lsp.servers")),
+            automatic_enable = true,
 		})
 
 		vim.diagnostic.config({
