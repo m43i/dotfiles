@@ -42,9 +42,6 @@ return {
 	},
 	gopls = {},
 	svelte = {},
-	denols = {
-		single_file_support = false,
-	},
 	intelephense = {
 		intelephense = {
 			format = {

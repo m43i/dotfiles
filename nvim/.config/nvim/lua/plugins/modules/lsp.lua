@@ -78,17 +78,19 @@ return {
 			cmp_nvim_lsp.default_capabilities()
 		)
 
-		local lspconfig = require("lspconfig")
-
 		local vue_language_server_path = vim.fn.exepath("vue-language-server") .. "/node_modules/@vue/language-server"
-        lspconfig.gopls.setup({
-            capabilities = capabilities,
+        vim.lsp.config("*", {
             on_attach = require("config.lsp.on_attach").on_attach,
+            capabilities = capabilities,
+        })
+        vim.lsp.config("gopls", {
+            on_attach = require("config.lsp.on_attach").on_attach,
+            capabilities = capabilities,
             settings = require("config.lsp.servers").gopls,
         })
-		lspconfig.ts_ls.setup({
+        vim.lsp.config("ts_ls", {
 			capabilities = capabilities,
-			root_dir = require("lspconfig").util.root_pattern("package.json"),
+            root_pattern = { 'package.json', 'tsconfig.json' },
 			on_attach = require("config.lsp.on_attach").on_attach,
 			init_options = {
 				plugins = {
@@ -101,17 +103,12 @@ return {
 			},
 			filetypes = (require("config.lsp.servers").ts_ls or {}).filetypes,
 		})
-		lspconfig.denols.setup({
-			capabilities = capabilities,
-			root_dir = require("lspconfig").util.root_pattern("deno.json", "deno.jsonc", "import_map.json"),
-			on_attach = require("config.lsp.on_attach").on_attach,
-		})
-		lspconfig.clangd.setup({
+        vim.lsp.config("clangd", {
 			capabilities = capabilities,
 			on_attach = require("config.lsp.on_attach").on_attach,
 			filetypes = { "c", "ino", "cpp", "hpp", "h" },
 		})
-		lspconfig.pylsp.setup({
+        vim.lsp.config("pylsp", {
 			capabilities = capabilities,
 			on_attach = require("config.lsp.on_attach").on_attach,
 			settings = {
@@ -134,7 +131,7 @@ return {
 				},
 			},
 		})
-        lspconfig.lua_ls.setup({
+        require("lspconfig").lua_ls.setup({
             capabilities = capabilities,
             on_attach = require("config.lsp.on_attach").on_attach,
             settings = require("config.lsp.servers").lua_ls,
@@ -152,7 +149,7 @@ return {
 		require("mason-lspconfig").setup({
 			automatic_installation = false,
 			ensure_installed = vim.tbl_keys(require("config.lsp.servers")),
-			automatic_enable = false,
+			automatic_enable = true,
 		})
 
 		vim.diagnostic.config({
