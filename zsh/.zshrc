@@ -161,12 +161,21 @@ export GPG_TTY=$(tty)
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-# Macro for dotfiles
-export DOTFILES="$HOME/.dotfiles"
-
 # Pyenv
 export PATH="/home/apollo/.config/herd-lite/bin:$PATH"
 export PHP_INI_SCAN_DIR="/home/apollo/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init - zsh)"
+
+# pnpm
+export PNPM_HOME="/home/malte/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+
+# Load .zshrc.local if it exists
+if [ -f ~/.zshrc.local ]; then
+    source ~/.zshrc.local
+fi
