@@ -7,90 +7,26 @@ return {
 		{ "j-hui/fidget.nvim", opts = {} },
 		"folke/neodev.nvim",
 		{ "b0o/schemastore.nvim" },
-		{ "hrsh7th/cmp-nvim-lsp" },
-		{ "hrsh7th/cmp-buffer" },
-		{ "hrsh7th/cmp-path" },
-		{ "hrsh7th/nvim-cmp" },
-		{ "hrsh7th/cmp-nvim-lua" },
-		{ "L3MON4D3/LuaSnip" },
-		{ "saadparwaiz1/cmp_luasnip" },
-		{ "onsails/lspkind.nvim" },
 	},
 	config = function()
-		local cmp = require("cmp")
-		local cmp_nvim_lsp = require("cmp_nvim_lsp")
-		local cmp_select = { behavior = cmp.SelectBehavior.Select }
-		local lspkind = require("lspkind")
-		cmp.setup({
-			snippet = {
-				expand = function(args)
-					require("luasnip").lsp_expand(args.body)
-				end,
-			},
-			mapping = cmp.mapping.preset.insert({
-				["<C-p>"] = cmp.mapping.select_prev_item(cmp_select),
-				["<C-n>"] = cmp.mapping.select_next_item(cmp_select),
-				["<C-y>"] = cmp.mapping.confirm({ select = true }),
-				["<C-Space>"] = cmp.mapping.complete(),
-				["Tab"] = nil,
-				["S-Tab"] = nil,
-			}),
-			sources = {
-				{ name = "nvim_lsp" },
-				{ name = "supermaven" },
-				{ name = "luasnip" },
-				{ name = "buffer" },
-				{ name = "path" },
-			},
-			formatting = {
-				fields = { "abbr", "kind", "menu" },
-				expandable_indicator = true,
-				format = lspkind.cmp_format({
-					mode = "symbol_text",
-					menu = {
-						buffer = "[Buffer]",
-						nvim_lsp = "[LSP]",
-						luasnip = "[LuaSnip]",
-						nvim_lua = "[Lua]",
-						latex_symbols = "[Latex]",
-					},
-					maxwidth = 50,
-					ellipsis_char = "...",
-					show_labelDetails = true,
-				}),
-			},
-		})
-
-		lspkind.init({
-			symbol_map = {
-				Supermaven = "",
-			},
-		})
-		vim.api.nvim_set_hl(0, "CmpItemKindSupermaven", { fg = "#6CC644" })
-
 		require("lspconfig.ui.windows").default_options.border = "single"
 		require("neodev").setup()
 
-		local capabilities = vim.tbl_deep_extend(
-			"force",
-			{},
-			vim.lsp.protocol.make_client_capabilities(),
-			cmp_nvim_lsp.default_capabilities()
-		)
+        local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 		local vue_language_server_path = vim.fn.exepath("vue-language-server") .. "/node_modules/@vue/language-server"
-        vim.lsp.config("*", {
-            on_attach = require("config.lsp.on_attach").on_attach,
-            capabilities = capabilities,
-        })
-        vim.lsp.config("gopls", {
-            on_attach = require("config.lsp.on_attach").on_attach,
-            capabilities = capabilities,
-            settings = require("config.lsp.servers").gopls,
-        })
-        vim.lsp.config("ts_ls", {
+		vim.lsp.config("*", {
+			on_attach = require("config.lsp.on_attach").on_attach,
 			capabilities = capabilities,
-            root_pattern = { 'package.json', 'tsconfig.json' },
+		})
+		vim.lsp.config("gopls", {
+			on_attach = require("config.lsp.on_attach").on_attach,
+			capabilities = capabilities,
+			settings = require("config.lsp.servers").gopls,
+		})
+		vim.lsp.config("ts_ls", {
+			capabilities = capabilities,
+			root_pattern = { "package.json", "tsconfig.json" },
 			on_attach = require("config.lsp.on_attach").on_attach,
 			init_options = {
 				plugins = {
@@ -103,12 +39,22 @@ return {
 			},
 			filetypes = (require("config.lsp.servers").ts_ls or {}).filetypes,
 		})
-        vim.lsp.config("clangd", {
-			capabilities = capabilities,
-			on_attach = require("config.lsp.on_attach").on_attach,
-			filetypes = { "c", "ino", "cpp", "hpp", "h" },
-		})
-        vim.lsp.config("pylsp", {
+		local has_idf = vim.fn.executable("idf.py") == 0
+		if has_idf then
+			vim.lsp.config("clangd", {
+				capabilities = capabilities,
+				on_attach = require("config.lsp.on_attach").on_attach,
+				filetypes = { "c", "ino", "cpp", "hpp", "h" },
+			})
+		else
+			vim.lsp.config("clangd", {
+				capabilities = capabilities,
+				on_attach = require("config.lsp.on_attach").on_attach,
+				filetypes = { "c", "ino", "cpp", "hpp", "h" },
+				cmd = { "/home/malte/.espressif/tools/esp-clang/esp-19.1.2_20250312/esp-clang/bin/clangd" },
+			})
+		end
+		vim.lsp.config("pylsp", {
 			capabilities = capabilities,
 			on_attach = require("config.lsp.on_attach").on_attach,
 			settings = {
@@ -131,11 +77,11 @@ return {
 				},
 			},
 		})
-        require("lspconfig").lua_ls.setup({
-            capabilities = capabilities,
-            on_attach = require("config.lsp.on_attach").on_attach,
-            settings = require("config.lsp.servers").lua_ls,
-        })
+		require("lspconfig").lua_ls.setup({
+			capabilities = capabilities,
+			on_attach = require("config.lsp.on_attach").on_attach,
+			settings = require("config.lsp.servers").lua_ls,
+		})
 
 		require("mason").setup({
 			ui = {
