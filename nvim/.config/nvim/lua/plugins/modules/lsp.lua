@@ -12,7 +12,7 @@ return {
 		require("lspconfig.ui.windows").default_options.border = "single"
 		require("neodev").setup()
 
-        local capabilities = vim.lsp.protocol.make_client_capabilities()
+		local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 		local vue_language_server_path = vim.fn.exepath("vue-language-server") .. "/node_modules/@vue/language-server"
 		vim.lsp.config("*", {

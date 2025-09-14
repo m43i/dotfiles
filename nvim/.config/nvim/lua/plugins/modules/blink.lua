@@ -46,7 +46,7 @@ return {
 			["<C-n>"] = { "select_next", "fallback" },
 			["<C-y>"] = { "accept", "fallback" },
 			["<C-Space>"] = { "hide", "fallback" },
-			["<C-h>"] = { "show", "fallback" },
+			["<C-H>"] = { "show", "fallback" },
 		},
 	},
 }

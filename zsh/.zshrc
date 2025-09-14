@@ -179,3 +179,11 @@ esac
 if [ -f ~/.zshrc.local ]; then
     source ~/.zshrc.local
 fi
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/malte/.lmstudio/bin"
+# End of LM Studio CLI section
+
+
+# opencode
+export PATH=/home/malte/.opencode/bin:$PATH
