@@ -5,12 +5,11 @@ return {
 		{ "mason-org/mason.nvim", config = true, build = ":MasonUpdate" },
 		"mason-org/mason-lspconfig.nvim",
 		{ "j-hui/fidget.nvim", opts = {} },
-		"folke/neodev.nvim",
+        "folke/lazydev.nvim",
 		{ "b0o/schemastore.nvim" },
 	},
 	config = function()
-		require("lspconfig.ui.windows").default_options.border = "single"
-		require("neodev").setup()
+        require("lazydev").setup()
 
 		local capabilities = vim.lsp.protocol.make_client_capabilities()
 
@@ -22,7 +21,6 @@ return {
 		vim.lsp.config("gopls", {
 			on_attach = require("config.lsp.on_attach").on_attach,
 			capabilities = capabilities,
-			settings = require("config.lsp.servers").gopls,
 		})
 		vim.lsp.config("ts_ls", {
 			capabilities = capabilities,
@@ -37,7 +35,6 @@ return {
 					},
 				},
 			},
-			filetypes = (require("config.lsp.servers").ts_ls or {}).filetypes,
 		})
 		local has_idf = vim.fn.executable("idf.py") == 0
 		if has_idf then
@@ -54,33 +51,25 @@ return {
 				cmd = { "/home/malte/.espressif/tools/esp-clang/esp-19.1.2_20250312/esp-clang/bin/clangd" },
 			})
 		end
-		vim.lsp.config("pylsp", {
+		vim.lsp.config("basedpyright", {
 			capabilities = capabilities,
 			on_attach = require("config.lsp.on_attach").on_attach,
 			settings = {
-				pylsp = {
-					plugins = {
-						flake8 = {
-							enabled = true,
-							maxLineLength = 120,
-						},
-						mypy = {
-							enabled = true,
-						},
-						pycodestyle = {
-							enabled = false,
-						},
-						pyflakes = {
-							enabled = false,
-						},
+				basedpyright = {
+					analysis = {
+						typeCheckingMode = "basic", -- or "strict"
+						autoImportCompletions = true,
+						diagnosticMode = "openFilesOnly", -- "workspace" for full indexing
+						useLibraryCodeForTypes = true,
+						venvPath = ".", -- project root
+						venv = ".venv", -- your uv-managed venv
 					},
 				},
 			},
 		})
-		require("lspconfig").lua_ls.setup({
+		vim.lsp.config("lua_ls", {
 			capabilities = capabilities,
 			on_attach = require("config.lsp.on_attach").on_attach,
-			settings = require("config.lsp.servers").lua_ls,
 		})
 
 		require("mason").setup({
