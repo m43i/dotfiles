@@ -1,3 +1,8 @@
 theme = Kanagawa Wave
 font-family = "JetBrainsMono Nerd Font Mono"
 font-size = 10
+
+keybind = shift+enter=text:\x1b\r
+
+# Slowdown mouse scrolling
+mouse-scroll-multiplier = 0.95

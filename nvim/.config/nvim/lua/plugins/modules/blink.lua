@@ -3,7 +3,7 @@ return {
 	version = "1.*",
 	dependencies = {
 		"rafamadriz/friendly-snippets",
-		"fang2hou/blink-copilot",
+		"giuxtaposition/blink-cmp-copilot",
 	},
 	event = "InsertEnter",
 	opts = {
@@ -20,6 +20,10 @@ return {
 			menu = {
 				draw = {
 					treesitter = { "lsp" },
+					columns = {
+						{ "label", "label_description", gap = 1 },
+						{ "kind_icon", "kind" },
+					},
 				},
 			},
 			documentation = {
@@ -35,7 +39,7 @@ return {
 			providers = {
 				copilot = {
 					name = "copilot",
-					module = "blink-copilot",
+					module = "blink-cmp-copilot",
 					score_offset = 100,
 					async = true,
 				},
@@ -46,7 +50,6 @@ return {
 			["<C-n>"] = { "select_next", "fallback" },
 			["<C-y>"] = { "accept", "fallback" },
 			["<C-Space>"] = { "hide", "fallback" },
-			["<C-H>"] = { "show", "fallback" },
 		},
 	},
 }

@@ -1,9 +1,14 @@
 return {
 	"nvim-treesitter/nvim-treesitter-context",
 	dependencies = {
-		"nvim-treesitter/nvim-treesitter",
-		build = ":TSUpdate",
+		{
+			"nvim-treesitter/nvim-treesitter-textobjects",
+			dependencies = {
+				"nvim-treesitter/nvim-treesitter",
+			},
+		},
 	},
+	build = ":TSUpdate",
 	config = function()
 		require("nvim-treesitter.configs").setup({
 			-- A list of parser names, or "all"

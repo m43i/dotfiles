@@ -1,13 +1,12 @@
 return {
-    -- "zbirenbaum/copilot-cmp",
-    "zbirenbaum/copilot.lua",
-	-- dependencies = {
-	--    },
-    config = function ()
+	"zbirenbaum/copilot.lua",
+    dependencies = {
+        "copilotlsp-nvim/copilot-lsp",
+    },
+	config = function()
 		require("copilot").setup({
-            panel = { enable = false },
-            suggestion = { enabled = false },
-        })
-        -- require("copilot_cmp").setup()
-    end
+			panel = { enable = false },
+			suggestion = { enabled = false },
+		})
+	end,
 }
