@@ -13,11 +13,13 @@ return {
 	config = function()
 		require("conform").setup({
 			formatters_by_ft = {
-				javascript = { "biome", "prettierd", stop_after_first = true },
-				javascriptreact = { "biome", "prettierd", stop_after_first = true },
-				typescript = { "biome", "prettierd", stop_after_first = true },
-				typescriptreact = { "biome", "prettierd", stop_after_first = true },
-				vue = { "prettierd" },
+				javascript = { "oxfmt", "biome", "prettierd", stop_after_first = true },
+				javascriptreact = { "oxfmt", "biome", "prettierd", stop_after_first = true },
+				typescript = { "oxfmt", "biome", "prettierd", stop_after_first = true },
+				typescriptreact = { "oxfmt", "biome", "prettierd", stop_after_first = true },
+                json = { "oxfmt", "biome", "prettierd" },
+                yaml = { "prettierd" },
+				vue = { "oxfmt", "prettierd" },
 				svelte = { "prettierd" },
 				go = { "goimports", "gofmt" },
 				lua = { "stylua" },
@@ -28,6 +30,12 @@ return {
 				biome = {
 					condition = function(_, ctx)
                         local find = vim.fs.find({ "biome.json" }, { path = ctx.filename, upward = true })[1]
+                        return find ~= nil
+					end,
+				},
+				oxfmt = {
+					condition = function(_, ctx)
+                        local find = vim.fs.find({ ".oxfmtrc.json", ".oxfmtrc.jsonc", "oxfmt.config.ts" }, { path = ctx.filename, upward = true })[1]
                         return find ~= nil
 					end,
 				},
