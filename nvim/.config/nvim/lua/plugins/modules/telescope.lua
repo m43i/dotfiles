@@ -1,12 +1,18 @@
 return {
 	"nvim-telescope/telescope.nvim",
-	branch = "0.1.x",
+	branch = "master",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 		"nvim-telescope/telescope-ui-select.nvim",
 		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 	},
 	config = function()
+		if not vim.treesitter.language.ft_to_lang then
+			vim.treesitter.language.ft_to_lang = function(filetype)
+				return vim.treesitter.language.get_lang(filetype) or filetype
+			end
+		end
+
 		require("telescope").setup({
 			defaults = {
 				file_ignore_patterns = { "node_modules", ".git" },

@@ -1,37 +1,42 @@
 return {
-	"nvim-treesitter/nvim-treesitter-context",
+	"nvim-treesitter/nvim-treesitter",
+	branch = "main",
+	lazy = false,
+	build = ":TSUpdate",
 	dependencies = {
+		"nvim-treesitter/nvim-treesitter-context",
 		{
 			"nvim-treesitter/nvim-treesitter-textobjects",
-			dependencies = {
-				"nvim-treesitter/nvim-treesitter",
-			},
+			branch = "main",
 		},
 	},
-	build = ":TSUpdate",
 	config = function()
-		require("nvim-treesitter.configs").setup({
-			-- A list of parser names, or "all"
-			ensure_installed = { "vimdoc", "javascript", "typescript", "php", "c", "lua", "rust" },
+		local parsers = { "vimdoc", "javascript", "typescript", "php", "c", "lua", "rust", "json" }
+		local treesitter = require("nvim-treesitter")
 
-			-- One of "all", "maintained" (parsers with maintainers), or a list of languages
-			ignore_install = {},
+		treesitter.setup()
 
-			modules = {},
+		local installed = treesitter.get_installed()
+		local missing = vim.iter(parsers)
+			:filter(function(parser)
+				return not vim.tbl_contains(installed, parser)
+			end)
+			:totable()
 
-			-- Install parsers synchronously (only applied to `ensure_installed`)
-			sync_install = false,
+		if #missing > 0 then
+			treesitter.install(missing)
+		end
 
-			-- Automatically install missing parsers when entering buffer
-			-- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-			auto_install = true,
+		vim.api.nvim_create_autocmd("FileType", {
+			callback = function(args)
+				local lang = vim.treesitter.language.get_lang(vim.bo[args.buf].filetype)
+				if not lang or not vim.tbl_contains(treesitter.get_installed("parsers"), lang) then
+					return
+				end
 
-			highlight = {
-				-- `false` will disable the whole extension
-				enable = true,
-
-				additional_vim_regex_highlighting = false,
-			},
+				vim.treesitter.start(args.buf, lang)
+				vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+			end,
 		})
 	end,
 }

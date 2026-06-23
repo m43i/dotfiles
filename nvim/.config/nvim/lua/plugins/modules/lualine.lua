@@ -2,10 +2,12 @@ return {
 	"nvim-lualine/lualine.nvim",
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 	config = function()
+		local theme = require("config.theme")
+
 		require("lualine").setup({
 			options = {
 				icons_enabled = true,
-				theme = "kanagawa",
+				theme = theme.lualine_theme(),
 				component_separators = { left = "", right = "" },
 				section_separators = { left = "", right = "" },
 				disabled_filetypes = {

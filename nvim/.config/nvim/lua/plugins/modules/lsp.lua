@@ -12,20 +12,21 @@ return {
         require("lazydev").setup()
 
 		local capabilities = vim.lsp.protocol.make_client_capabilities()
+		local on_attach = require("config.lsp.on_attach").on_attach
 
 		local vue_language_server_path = vim.fn.exepath("vue-language-server") .. "/node_modules/@vue/language-server"
 		vim.lsp.config("*", {
-			on_attach = require("config.lsp.on_attach").on_attach,
+			on_attach = on_attach,
 			capabilities = capabilities,
 		})
 		vim.lsp.config("gopls", {
-			on_attach = require("config.lsp.on_attach").on_attach,
+			on_attach = on_attach,
 			capabilities = capabilities,
 		})
 		vim.lsp.config("ts_ls", {
 			capabilities = capabilities,
 			root_pattern = { "package.json", "tsconfig.json" },
-			on_attach = require("config.lsp.on_attach").on_attach,
+			on_attach = on_attach,
 			init_options = {
 				plugins = {
 					{
@@ -36,24 +37,28 @@ return {
 				},
 			},
 		})
+		vim.lsp.config("rust_analyzer", {
+			on_attach = on_attach,
+			capabilities = capabilities,
+		})
 		local has_idf = vim.fn.executable("idf.py") == 0
 		if has_idf then
 			vim.lsp.config("clangd", {
 				capabilities = capabilities,
-				on_attach = require("config.lsp.on_attach").on_attach,
+				on_attach = on_attach,
 				filetypes = { "c", "ino", "cpp", "hpp", "h" },
 			})
 		else
 			vim.lsp.config("clangd", {
 				capabilities = capabilities,
-				on_attach = require("config.lsp.on_attach").on_attach,
+				on_attach = on_attach,
 				filetypes = { "c", "ino", "cpp", "hpp", "h" },
 				cmd = { "/home/malte/.espressif/tools/esp-clang/esp-19.1.2_20250312/esp-clang/bin/clangd" },
 			})
 		end
 		vim.lsp.config("basedpyright", {
 			capabilities = capabilities,
-			on_attach = require("config.lsp.on_attach").on_attach,
+			on_attach = on_attach,
 			settings = {
 				basedpyright = {
 					analysis = {
@@ -69,7 +74,7 @@ return {
 		})
 		vim.lsp.config("lua_ls", {
 			capabilities = capabilities,
-			on_attach = require("config.lsp.on_attach").on_attach,
+			on_attach = on_attach,
 		})
 
 		require("mason").setup({
