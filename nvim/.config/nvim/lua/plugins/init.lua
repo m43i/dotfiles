@@ -11,7 +11,15 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup("plugins.modules", {
+require("lazy").setup({
+	{ import = "plugins.modules" },
+	{
+		name = "omarchy-theme",
+		import = function()
+			return require("config.theme").specs()
+		end,
+	},
+}, {
 	install = {
 		missing = true,
 	},
