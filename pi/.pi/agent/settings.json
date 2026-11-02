@@ -1,12 +1,14 @@
 {
-  "lastChangelogVersion": "0.85.1",
+  "lastChangelogVersion": "1.4.0",
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-6-astra",
+  "defaultModel": "gpt-6.1-sol",
   "defaultThinkingLevel": "medium",
   "hideThinkingBlock": true,
-  "theme": "catppuccin-macchiato",
-  "packages": [
-    "npm:pi-subagents",
-    "npm:@juicesharp/rpiv-ask-user-question"
-  ]
+  "theme": "omarchy-system",
+  "packages": [],
+  "images": {
+    "blockImages": false
+  },
+  "tuiMode": "fullscreen",
+  "deviceId": "fb83b6c6-93e0-4ce9-ab9f-3a36c806e581"
 }
