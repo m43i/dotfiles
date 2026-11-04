@@ -9,7 +9,9 @@ Do the same work as `full-send`, but stop with the PR ready for the user to merg
 Never merge it.
 
 Read [full-send](../full-send/SKILL.md) and follow its workflow, proof rules,
-review, and babysitting steps. An explicit "full stop" request authorizes that
+council review, and babysitting steps. Use the `council` skill for feedback as
+specified there, including fresh reviews after fixes and rounds and scores in
+the PR description. An explicit "full stop" request authorizes that
 work without a separate "full send" request. That includes full-send's
 testing permission. A "full stop" request is the permission for the test
 methods Proof needs, even when a project file says to ask first, for
